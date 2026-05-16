@@ -1,0 +1,12 @@
+# Default: normalize to LF on commit; checkout matches working tree state.
+* text=auto eol=lf
+
+# These sample CSVs are course fixtures — preserve their byte content exactly,
+# including line endings, regardless of git autocrlf settings.
+samples/windows_export.csv -text
+samples/monobank_export.csv -text
+
+# Windows-only scripts should checkout as CRLF.
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf

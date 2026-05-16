@@ -1,0 +1,7 @@
+build/
+*.o
+*.a
+.DS_Store
+cashtrack_db.json
+.cache/
+compile_commands.json
