@@ -1,0 +1,81 @@
+=== Entry 1 ===
+Track:        Greenfield
+AI role:      Generator (W2)
+Tool used:    Claude Opus 4.7
+Date & time:  2026-05-23 (Europe/Kiev)
+Chat link:    Notion log page (private workspace)
+
+Goal:
+Generate candidate user stories from my motivation.md for PRD v0 (§2).
+
+Prompt:
+[Pasted full motivation.md content: Problem / Existing solutions table /
+Why mine still has a point / P0 in one sentence / How I'll know I failed]
+followed by:
+"Based on this text, generate 10-12 candidate user stories. Format each
+one as: ID; As a <role>, I want <action>, so that <benefit>; one testable
+G/W/T criterion for pytest; suggested priority (P0/P1/P2) with motivation-
+linked justification; potential silent-failure surface. Tag no more than
+6 stories as P0."
+
+Output (summary):
+12 candidate stories WB-01..WB-12, 6 tagged P0 by the model
+(WB-01, WB-02, WB-03, WB-04, WB-05, WB-06).
+
+Verification:
+- Cross-checked every story against motivation.md scope.
+- Verified icalendar.Calendar.from_ical() is a real API in the icalendar
+  Python package.
+- Re-read motivation prose against the model's "weighted tasks" claim.
+
+Kept:
+WB-01 (CLI flag corrected from positional to --config),
+WB-02, WB-03, WB-04, WB-05,
+WB-06 (softened from "byte-identical" to "deterministic VEVENTs"),
+WB-08, WB-09, WB-12.
+
+Discarded and why:
+- WB-07 (focus cap): named in motivation but P0 sentence narrows scope;
+  deferred.
+- WB-10: model invented Apple/Outlook import support; motivation names
+  only Google Calendar -- scope creep.
+- WB-11: model invented "file:line pointer" error-UX requirement;
+  motivation makes no such promise.
+- Model's positional CLI flag in WB-01: motivation uses --config
+  week.yaml; corrected.
+- Model's "byte-identical" framing in WB-06: motivation says "diffable",
+  not bit-identical; softened.
+- Model's 6-P0 count: brief requires P0=3-4; trimmed to 4 P0.
+- Initially mis-flagged WB-12 (weighted tasks) as hallucinated based on
+  YAML schema; on re-reading motivation prose ("weighted tasks with
+  deadlines") I caught the verification error and reinstated WB-12 as
+  P2, with a §5 Open Question on adding weight:int to the schema.
+
+Outcome:
+Useful starting point. The model's priority distribution did not match
+the brief and it invented one scope-creep feature (Apple/Outlook) and one
+UX requirement (file:line errors). Catching my own initial mis-discard of
+WB-12 was the most valuable verification step.
+
+=== Entry 2 ===
+Track:        Legacy (W2 test scaffolding)
+AI role:      Code-archaeologist / test-translator
+Tool used:    Notion AI chat assistant
+Date & time:  2026-05-23 (Europe/Kiev)
+
+Goal:
+Set up conftest.py with HOME-isolated subprocess fixture per brief
+requirements; translate observed cashtrack binary output into pytest
+assertions for the first characterization test.
+
+Verification:
+- All assertions written only against binary stdout captured manually
+  before writing the test.
+- # Observed: block reflects real observation on a 3-row fixture.
+
+Outcome:
+First confirming test (test_import_twice_skips_duplicates.py) committed.
+This pins documented dedup behavior; it is NOT a README<->binary gap on
+this input. Hypothesis-Generator session deferred: brief pre-condition
+requires >=5 manual tests written first, which was not reached at
+submission time due to time pressure.

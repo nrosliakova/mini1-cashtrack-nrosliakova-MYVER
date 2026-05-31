@@ -4,7 +4,7 @@
 > Import bank CSV exports. Categorize transactions. Get reports. Never leave the terminal.
 
 [![CI](https://github.com/example/cashtrack/actions/workflows/ci.yml/badge.svg)](https://github.com/example/cashtrack/actions)
-[![Release](https://img.shields.io/badge/release-v0.3.0-blue.svg)](https://github.com/example/cashtrack/releases/tag/v0.3.0
+[![Release](https://img.shields.io/badge/release-v0.3.0-blue.svg)](https://github.com/example/cashtrack/releases/tag/v0.3.0)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 ---

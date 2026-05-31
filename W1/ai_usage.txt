@@ -1,0 +1,114 @@
+# ai_usage.txt — SE460 Software Engineering Practices, 2026
+
+Student name:           Nina Rosliakova
+Submission:             W1 weekly practice
+Submission date:        2026-05-17
+Practice repo PR:       direct push to main of private cashtrack fork
+Greenfield repo:        not submitted this week — see report.md
+Team (if any):          Solo
+
+## Session 1 — Template 1 black-box on cashtrack
+
+Track:          LEGACY
+AI role:        code-archaeologist
+Tool & model:   Sonnet 4.6
+Chat link:      no public link, prompt below
+Date & time:    2026-05-1[FILL: 6 or 17], [FILL: rough time]
+
+### Goal
+first draft of 5 behavior bullets + 3 unconfirmed suspicions for legacy/black_box.md. gave it outputs.
+
+### Prompt
+Template 1 from ai_prompts.md. pasted --help, no-args, and the full terminal dump of import / list / report / categories / split / sort / export / repeat-import into the three required blocks.
+
+### Verification
+- re-ran second import on same file and confirmed that "26 duplicates skipped, Total amount: 0" (Total = this-run amounts, not DB total — naming quirk AI didnt flag)
+- `cat samples/chase_export.csv` , confirmed pure ASCII source, which contradicts AIs first-draft claim that mangled descriptions "likely contain non-ASCII characters"
+- compared `list` vs `sort` output side by side, confirmed asymmetric mangling (list mangles only ≥16-char descriptions, rows intact; sort truncates every description and embeds newlines on long ones)
+
+### What I kept
+- bullets 1-4 (import persists to DB, list reads from DB, sort writes CSV to stdout without touching DB, report sign convention differs by axis)
+- suspicion 1 (idempotent re-import) — falsifiable in one command
+- suspicion 2 (report --by month aggregates across DB) — falsifiable in one command
+
+### What I discarded and why
+- AIs draft bullet 5 said mangled descriptions "likely contain non-ASCII characters" and that the bug was "in the shared input/display layer". both wrong: `cat` proved ASCII source, and the mangling is asymmetric between list and sort → two bugs, two code paths. rewrote bullet 5 from scratch.
+- AIs draft suspicion 3 ("sort writes only to stdout") — already confirmed in the observed dump, so not a suspicion. swapped for the --from/--to flag-availability suspicion (cashtrack --help lists no date flags for report but `report --from --to` works → maybe list accepts them too).
+
+### Outcome
+mixed. AI got the structure right fast but bullet 5 + suspicion 3 needed full rewriting. saved time than if starting blank. bullet 5 was the "AI confident-wrong" moment the brief warns about — 30 sec with `cat` debunked it.
+
+---
+
+## Session 2 — Template 2 reverse-motivation on cashtrack
+
+Track:          LEGACY
+AI role:        code-archaeologist
+Tool & model:   Sonnet 4.6
+Chat link:      no public link, prompt below
+Date & time:    2026-05-17, [FILL: rough time]
+
+### Goal
+3 alternatives + 2 steelman + 1 sharpest-cut structure for legacy/competitors.md, anchored on cashtracks own README "Why cashtrack?" comparison table.
+
+### Prompt
+Template 2 from ai_prompts.md with the full README.md + the observed-behavior bullets from Session 1 pasted into the two required blocks.
+
+### Verification
+- opened hledger.org, gnucash.org, microsoft.com excel page → confirmed all 3 exist and are actively maintained
+- cross-checked the "edit categories.cpp and rebuild" claim against the README directly — its in the README verbatim, so its a verifiable cut not a generic one
+
+### What I kept
+- all 3 alternatives (hledger, GnuCash, Excel + Power Query)
+- the "categorization config requires C++ rebuild" sharpest-cut argument — README-anchored
+- steelman #1 (solo CLI-native user, low volume) — defensible
+
+### What I discarded and why
+- AI initially suggested YNAB as the third alternative. discarded → cashtracks README already lists YNAB in its own comparison table and dismisses it on price + cloud, so citing it again surfaces nothing new
+- AIs first cut was generic ("the alternatives are more mature"). rewrote to a sharper evidence-anchored one about auto-categorization specifically being the only differentiator and being broken at the config layer
+
+### Outcome
+saved time. tool-homepage verifiability check took \~5 min. no invented tools this round.
+
+---
+
+## Session 3 — bullet 5 + suspicion 3 rewrite (Notion AI)
+
+Track:          LEGACY
+AI role:        code-archaeologist
+Tool & model:   Notion AI (in-app assistant)
+Chat link:      no public link, conversation in Notion
+Date & time:    2026-05-17, evening
+
+### Goal
+after Session 1, my own probes (cat + sort-vs-list side-by-side) showed bullet 5 wrong on two specific claims. used Notion AI to help triage what to rewrite, design the synthetic-CSV probe for the numeric-sort hypothesis, and decide whether to attempt greenfield given time pressure.
+
+### Prompt
+described the bullet-5 contradiction (ASCII source via cat, asymmetric list-vs-sort mangling), asked for a corrected bullet framing. separately asked: "what synthetic CSV would catch sort --column amount sorting lexicographically?" and "given X minutes left and no project idea, should i attempt greenfield motivation.md or accept 0?"
+
+### Verification
+- ran the synthetic CSV probe (-5.00, -200.00, -1.00) → output was -1, -200, -5 → confirmed lexicographic sort + trailing-zero stripping bug. recorded for W2 characterization tests.
+- triage call (skip greenfield, accept 0 on that half rather than push thin AI-flavored motivation.md that risks integrity flag under W1 rubric) — went with it. reasoning logged in report.md §2.
+
+### What I kept
+- revised bullet 5 framing (two bugs, two code paths — asymmetric failure modes)
+- the synthetic-CSV probe approach for numeric sort → became part of report.md "what surprised me"
+- the skip-greenfield triage decision
+
+### What I discarded and why
+- Notion AIs first-pass ai_usage.txt draft included a fabricated external-AI tool name and made-up exact timestamps (01:17 / 02:30 / 03:50). flagged it against the KSE code policy ("Fabricated entries = academic-integrity violation"). rewrote with [FILL] placeholders for things only i actually know.
+
+### Outcome
+productive. the verification loop (my probes → AIs rewrite → check again) caught two AI errors that wouldve gone into the final if accepted as-is.
+
+# ====================== SELF-ASSESSMENT ======================
+
+Total sessions logged this submission: 3
+
+Self-assessment: i drove the loop. AI was useful for fast first drafts and structure but was wrong on at least one substantive claim per session — bullet 5s encoding hypothesis, suspicion 3s already-confirmed framing, and a fabricated tool-name + timestamps in the ai_usage draft itself. verification step caught all of them. if id accepted any session verbatim the deliverable would contain at least one factually wrong claim that my own evidence disproved. verification was the actual work, not the prompting.
+
+# ====================== TRACK COVERAGE CHECK ======================
+
+This weeks ai_usage.txt covers:
+  [x] Legacy track  — Sessions 1, 2, 3
+  [ ] Greenfield track — not submitted this week (see report.md §2)
